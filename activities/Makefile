@@ -3,7 +3,7 @@ CC=g++
 CFLAGS= -I$(IDIR) -g -std=c++11 -O0
 
 ODIR=.
-NAME=Module06
+NAME=Activity2
 LIBS=-lncurses
 
 _DEPS = 
