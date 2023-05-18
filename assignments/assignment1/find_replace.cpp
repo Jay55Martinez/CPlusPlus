@@ -27,7 +27,7 @@ int main(void) {
         paragraph.replace(found, phrase1.length(), phrase2);
         // prints index of the phrase
         cout<<"The phrase was found at index: "<<found<<endl;
-        found = paragraph.find(phrase1, found+1);
+        found = paragraph.find(phrase1, found+phrase2.length());
         count++;
     }
     cout<<"the phrase was found "<<count<<" times"<<endl;
