@@ -1,6 +1,13 @@
 #include <iostream>
+#include <array>
+#include <vector>
 #include "file.hpp"
 using namespace std;
+
+#ifndef MY_TEST
+#define MY_TEST
+//your declarations go here!
+#endif
 
 /*
 Functions:
@@ -29,10 +36,10 @@ default arguemnts can be specified in function header/prototype!
 
 // These declarations go in a separate file (header file *.hpp)
 // int myFunction(int);
-int myFunction(int&);
-void print_me(int[], int); // dec - pass array function can modify
-void print_me(const int[], int); // dec - pass array function can't modify
-void print_me(string = "Hello");
+// int myFunction(int&);
+// void print_me(int[], int); // dec - pass array function can modify
+// void print_me(const int[], int); // dec - pass array function can't modify
+// void print_me(string = "Hello");
 // void print_me(int[][5], int, int); // dec - pass array function can modify
 // void print_me(int[][5][5], int, int, int); // dec - pass array function can modify
 
@@ -75,29 +82,29 @@ int myFunction(int my_var) {
 */
 
 // pass by reference
-int myFunction(int& my_var) {
-    cout<<"Value of my_var in myFunction(&): "<<my_var<<" "<<&my_var<<endl;
-    my_var++;
-    cout<<"I am inside myFunction(&)"<<endl;
-    return my_var;
-}
+// int myFunction(int& my_var) {
+//     cout<<"Value of my_var in myFunction(&): "<<my_var<<" "<<&my_var<<endl;
+//     my_var++;
+//     cout<<"I am inside myFunction(&)"<<endl;
+//     return my_var;
+// }
 
-void print_me(const int arrr[], int size) {
-    for(int i=0; i<size; i++) {
-        cout<<arrr[i]<<",";
-        // arrr[i] += 10;
-    }
-    cout<<endl;
-}
+// void print_me(const int arrr[], int size) {
+//     for(int i=0; i<size; i++) {
+//         cout<<arrr[i]<<",";
+//         // arrr[i] += 10;
+//     }
+//     cout<<endl;
+// }
 
-void print_me(int arrr[], int size) {
-    for(int i=0; i<size; i++) {
-        cout<<arrr[i]<<",";
-        arrr[i] += 10;
-    }
-    cout<<endl;
-}
+// void print_me(int arrr[], int size) {
+//     for(int i=0; i<size; i++) {
+//         cout<<arrr[i]<<",";
+//         arrr[i] += 10;
+//     }
+//     cout<<endl;
+// }
 
-void print_me(string str) {
-    cout<<str<<endl;
-}
+// void print_me(string str) {
+//     cout<<str<<endl;
+// }
