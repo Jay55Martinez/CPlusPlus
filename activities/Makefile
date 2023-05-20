@@ -3,13 +3,13 @@ CC=g++
 CFLAGS= -I$(IDIR) -g -std=c++11 -O0
 
 ODIR=.
-NAME=Activity3Main
+NAME=Activity4
 LIBS=-lncurses
 
 _DEPS = 
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = $(NAME).o Activity3Def.o
+_OBJ = $(NAME).o Activity4Def.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 $(ODIR)/%.o: %.cpp $(DEPS)
@@ -25,5 +25,6 @@ clean:
 	rm -f *~ core $(INCDIR)/*~ 
 	rm -f $(NAME)
 	rm -f *.o
+	rm -f Activity4Out.txt
 etags: 
 	find . -type f -iname "*.[ch]" | xargs etags --append  
