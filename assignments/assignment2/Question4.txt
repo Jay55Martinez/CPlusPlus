@@ -1,0 +1,22 @@
+a)
+Binary representation: 
+3 = 0011
+A = 0110
+2 = 0010
+3A2 = 0011 1010 0010 
+
+Octal representation:
+001 110 100 010 
+(1) (6) (4) (2)
+3A2 = 1642
+
+Decimal representation:
+3x16^2+10x16^1+2x16^0= 930
+
+b)
+What I think would be the easiest would be to first convert to binary and then do binary addition then
+convert back into hext:
+1C01 = 0001 1100 0000 0001
+9010 = 1001 0000 0001 0000 +
+       1010 1100 0001 0001
+AC11 =
