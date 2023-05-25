@@ -10,10 +10,10 @@ using namespace std;
 void MazeGenerator::generate_maze() {
     srand(time(NULL));
     int r = rand() % (col - 2) + 1;  // Randomly select a column for the left '.' (excluding the first and last columns)
-    generate(0, r);
+    generate(r, 0);
     
     r = rand() % (col - 2) + 1;  // Randomly select a column for the right '.' (excluding the first and last columns)
-    maze[row - 1][r] = '.';  // Place the right '.' on the bottom row
+    maze[r][row - 1] = '.';  // Place the right '.' on the bottom row
 }
 
 // initialize the maze with all walls
