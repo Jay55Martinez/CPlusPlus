@@ -3,12 +3,17 @@
 // car and initialize a car structure with the given information The program
 // should also print the information using a pointer to the initialized struct
 // The information printed using the struct and the pointer should be the same
-
+/*
+List of Bugs:
+struct references wrong
+spacing on when displaying off
+-> operator not used when refering to pointers
+*/
 // Bugs to fix : 9
 
 #include <iostream>
 #include <string>
-
+using namespace std; // not included
 struct car {
   char *name;
   int modelYear;
@@ -25,22 +30,23 @@ int main(void) {
 
   cout << "What is your favorite car's name: ";
   cin >> n;
-  name = n;
+  c.name = n; // fix
 
   cout << "When was it launched : ";
-  cout >> a;
+  cin >> a;
   c.modelYear = a; 
 
   cout << "How much speed does it give : ";
-  cin << w;
-  c.speed = speed; 
+  cin >> w; //fix
+  c.speed = w; //fix 
 
 
-  cout << "Car's name is" << c.name << ", and should be the same as" << cPtr.name
+  cout << "Car's name is " << c.name << ", and should be the same as" << cPtr->name //use arrow
        << ".\n";
 
-  cout << "Car's model year is" << car.modelYear << ", and should be the same as "
-       << modelYear << ".\n";
-  cout << "Car's speed is" << c.speed << ", and should be the same as "
+  cout << "Car's model year is " << c.modelYear << ", and should be the same as "
+       << cPtr->modelYear << ".\n";
+  cout << "Car's speed is " << c.speed << ", and should be the same as "
        << w << ".\n";
+
 }

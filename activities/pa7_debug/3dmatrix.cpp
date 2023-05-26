@@ -4,13 +4,21 @@
 // display method must not be able to modify array elements (update the code as needed)
 // display method must use a single loop/iterator to print the entire array with addresses
 // display cannot use nested loops
+/*
+List of Bugs:
+loop does not initialize
+const function not defined for a function that should not change the values
+print did not work
+*/
 //
 
 #include <iostream>
+#include <random>
 #define SIZE 7
+using namespace std;
 
 void update_3d(double Matrix_3d[][SIZE][SIZE], int size);
-void display_1d(double Matrix_3d[][SIZE][SIZE], int size);
+const void display_1d(double Matrix_3d[][SIZE][SIZE], int size);
 
 int main(void)
 {
@@ -20,22 +28,21 @@ int main(void)
 	update_3d(Matrix_3d, SIZE);
 	// display the values
 	display_1d(Matrix_3d, SIZE);
+
 	return 0;
 }
 
 void update_3d(double matrix[][SIZE][SIZE], int size)
 {
 	cout << "Entering SIZE^3 elements of the matrix:" << endl;
-	int i = 0;
-	for (; i < size; i++)
+	for (int i=0; i < size; i++)
 	{
-		int j = 0;
-		for (; j < size; j++)
+		for (int j=0; j < size; j++)
 		{
-			int k = 0;
-			for (; k < size; k++)
+			for (int k=0; k < size; k++)
 			{
-				// cin for Matrix_3d[i][j][k] or random number generator
+				int r = rand() % 10 + 1; // random num btw 1 and 10
+				matrix[i][j][k] = r;
 			}
 		}
 	}
@@ -44,10 +51,11 @@ void update_3d(double matrix[][SIZE][SIZE], int size)
 // update as needed. 1 'for' loop only with 1 iterator to print all values with addresses
 // must not be able to update the array.
 // Share any observations.
-void display_1d(//matrix, other args) {
-	
-	int i;
-	for (i= 0; i < size; i++) {
-	cout << /*&matrix*/ << ", " << /*matrix[i][j][k]*/ << endl;
+const void display_1d(double matrix[][SIZE][SIZE], int size) {
+	const double* matrixPtr = &matrix[0][0][0]; // starting address
+    const double* endPtr = &matrix[size-1][size-1][size-1]; // ending address
+
+    for (; matrixPtr < endPtr; matrixPtr++) {
+        cout << "Address: " << matrixPtr << ", Value: " << *matrixPtr << endl;
     }
 }

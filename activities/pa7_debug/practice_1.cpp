@@ -1,47 +1,53 @@
 
 // Program to check if the user-provided number is a palindrome
 // Number of errors/bugs = 25
-
-
+/*
+List of bugs:
+funtion not working
+return types wrong
+variable types wrong
+operations wrong
+*/
 //TODO: Fix the bugs and make sure the program runs as expected.
 //Provide a brief comment identifying each bug fixed.
-
-
 #include<iostream>
-void func(char x); 
-void main() {
-        char input = 1001;
-		  cout<<"enter an integer please"; 
-      returned_val = func2(return_value_function);
-        if (returned_val){ 
-                cout<<It is not a palindrome<<endl
+using namespace std;
+
+bool func(int n); 
+
+int main() { // return type int
+        int input = 1001;
+
+        if (func(input)) { 
+        cout<<"It is not a palindrome"<<endl;
         }
-        else{
-                cout<<"It is a palindrome"<<endl;
+        else {
+        cout<<"It is a palindrome"<<endl;
         }
 		
-		return 0
+        return 0;
 }
 
 //the return value of your func should be true / false only
-void func(int n, double result)
+bool func(int n) // fix return type
 {
-            float given_number
-            int temp = 0; 
-            while (n = 0) {
-					remainder = n / 10;
-					n/10; 
-                    temp * 10 + remainder; 
-                        
-            }
+        int given_number = n;
+        int temp = 0; 
+        int orginal = n; // store unchanged n value
 
-            if (n == temp)  
-            {
-                    return false;
-            }
-            else
-            {
-                    return true;
-                }
+        while (n != 0) {
+                int remainder = n%10; // remianeder
+                n /= 10; 
+                temp = temp * 10 + remainder;         
+        }
+
+        if (orginal == temp)  
+        {
+                return false;
+        }
+        else
+        {
+                return true;
+        }
 }
 
