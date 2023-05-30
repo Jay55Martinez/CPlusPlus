@@ -18,7 +18,9 @@
  */
 
 /* Change log:
- *
+ * new functions:
+ * init_WelcomeWindow
+ * 
  *
  */
 
@@ -48,6 +50,11 @@ typedef struct gamewindow_t gamewindow_t;
 
 gamewindow_t *init_GameWindow(int, int, int, int);
 gamewindow_t *changeGameWindow(int upper_left_x, int upper_left_y, int width, int height, gamewindow_t *);
+gamewindow_t *init_WelcomeWindow(int, int, int, int);
 
 void undraw_Gamewindow(gamewindow_t *);
 void draw_Gamewindow(gamewindow_t *);
+void draw_WelcomeWindow(gamewindow_t *);
+void undraw_Welcomewindow(gamewindow_t *);
+
+bool snake_at_boarder(gamewindow_t *r, int x, int y);
