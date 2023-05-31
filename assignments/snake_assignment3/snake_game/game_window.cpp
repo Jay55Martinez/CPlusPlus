@@ -55,8 +55,9 @@ gamewindow_t *init_GameWindow(int upper_left_x, int upper_left_y, int width, int
 void draw_Gamewindow(gamewindow_t *r)
 {
 	int row_counter, column_counter;
-
 	// Draw Top of room
+	init_pair(1, COLOR_RED, COLOR_BLACK);
+    attron(COLOR_PAIR(1));
 	for (row_counter = r->upper_left_x;
 		 row_counter <= (r->upper_left_x + r->width);
 		 row_counter++) {
@@ -83,6 +84,7 @@ void draw_Gamewindow(gamewindow_t *r)
 		 row_counter++) {
 		mvprintw(r->upper_left_y + r->height, row_counter, "%c", r->draw_char);
 	}
+	attroff(COLOR_PAIR(1));
 }
 
 gamewindow_t *changeGameWindow(int upper_left_x, int upper_left_y, int width, int height, gamewindow_t *r)
@@ -149,6 +151,7 @@ gamewindow_t *init_WelcomeWindow(int upper_left_x, int upper_left_y, int width, 
 	return (w);
 }
 
+
 void draw_WelcomeWindow(gamewindow_t* w) {
 	// draws welcome message on the screen and instruction on how to run the game
 	char message[20] = "Welcome to snake!";
@@ -163,15 +166,18 @@ void draw_WelcomeWindow(gamewindow_t* w) {
 	mvprintw(w->width/3 + 5,(w->height - strlen(message))/2, message);
 }
 
-void undraw_Welcomewindow(gamewindow_t * w) {
-	// un does the the welcome text
-	int row_counter, column_counter;
-
-	for(row_counter = w->width/3; row_counter <= w->width/3 +5; row_counter++) {
-		for(column_counter = (w->height - 24)/2 - 1; column_counter <= (w->height / 2) + 20; column_counter++) {
-			mvprintw(row_counter, column_counter, " ");
-		}
-	}
+void draw_GameOverWindow(gamewindow_t * w) {
+	// draws welcome message on the screen and instruction on how to run the game
+	char message[20] = "GAME OVER";
+	mvprintw(w->width/3,(w->height - strlen(message))/2, message);
+	strcpy(message, "Enter '1' for Easy");
+	mvprintw(w->width/3 + 2,(w->height - strlen(message))/2 - 1, message);
+	strcpy(message, "Enter '2' for Hard");
+	mvprintw(w->width/3 + 3,(w->height - strlen(message))/2 - 1, message);
+	strcpy(message, "Enter '3' for Advanced");
+	mvprintw(w->width/3 + 4,(w->height - strlen(message))/2 - 2, message);
+	strcpy(message, "Enter 'q' to quit");
+	mvprintw(w->width/3 + 5,(w->height - strlen(message))/2, message);
 }
 
 bool snake_at_boarder(gamewindow_t *r, int x, int y) {

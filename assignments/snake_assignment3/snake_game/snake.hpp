@@ -45,11 +45,14 @@ struct Snake {
 typedef struct Snake Snake;
 
 Snake* init_snake(int x, int y);
+Snake* init_obstacle(int x, int y);
 Snake* create_tail(int x, int y);
 Snake* move_snake(Snake* snake, int direction);
 Snake* add_tail(Snake* snake, int x, int y);
+Snake* add_obstacle(Snake* snake, int x, int y);
 void draw_snake(Snake* snake);
 bool eat_itself(Snake* snake);
+bool snake_colide(Snake* snake, Snake* snake2);
 Snake* remove_tail(Snake* snake);
 int len(Snake* snake);
 int tail_x(Snake* snake);

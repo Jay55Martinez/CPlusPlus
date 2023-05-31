@@ -42,9 +42,42 @@
 #include "game.hpp"
 using namespace std;
 
+void gameover() {
+    static int row, col, x_offset, y_offset; // screen size and top left corner of 
+    gamewindow_t* gwindow;
+    char option;
+    //Init board
+    initscr();
+    getmaxyx(stdscr, row, col);
+    gwindow = init_WelcomeWindow(x_offset, y_offset, row, col);
+    draw_GameOverWindow(gwindow);
+
+    // Select option
+    while(1) {
+        option = getch(); // get chr from user
+        if(option == '1') { // easy game selected
+            game(4, 20, 3);
+            break;
+        }
+        if(option == '2') { // hard game selected
+            game(8, 15, 7);
+            break;
+        }
+        if(option == '3') { // advanced game selected
+            game(12, 10, 12);
+            break;
+        }
+        if(option == 'q') // quit
+            clear(); 
+            refresh();
+            endwin();
+            break;
+    }
+}
+
 void welcome() {
     static int row, col, x_offset, y_offset; // screen size and top left corner of 
-    gamewindow_t* window;
+    gamewindow_t* wwindow;
     char option;
     //Init board
     initscr();
@@ -53,24 +86,21 @@ void welcome() {
     noecho();
     getmaxyx(stdscr, row, col);
 
-    window = init_GameWindow(x_offset, y_offset, row, col);
-    draw_WelcomeWindow(window);
+    wwindow = init_WelcomeWindow(x_offset, y_offset, row, col);
+    draw_WelcomeWindow(wwindow);
     // Select option
     while(1) {
         option = getch(); // get chr from user
         if(option == '1') { // easy game selected
-            undraw_Welcomewindow(window);
-            game(4, 20);
+            game(4, 20, 3);
             break;
         }
         if(option == '2') { // hard game selected
-            undraw_Welcomewindow(window);
-            game(8, 15);
+            game(8, 15, 7);
             break;
         }
         if(option == '3') { // advanced game selected
-            undraw_Welcomewindow(window);
-            game(12, 10);
+            game(12, 10, 12);
             break;
         }
         if(option == 'q') // quit
@@ -85,7 +115,7 @@ void generate_points(int *food_x, int *food_y, int width, int height, int x_offs
     *food_x = rand() % (width-1) + x_offset+1;
     *food_y = rand() % (height-1) + y_offset+1;
 }
-void game(int speed, int food) {
+void game(int speed, int food, int obstacle) {
     ofstream save_best_10;
     enum State state = INIT; // Set the initial state
     static int x_max, y_max; //Max screen size variables
@@ -98,6 +128,8 @@ void game(int speed, int food) {
     vector<int> numbers; // used to update the scores
     gamewindow_t *window; // Name of the board
     Snake *snake; // The snake
+    Snake *obstacles; // Obstacles
+    int obstacle_size;
     Food *foods,*new_food; // List of foods (Not an array)
 
     const int height = 30; 
@@ -110,18 +142,18 @@ void game(int speed, int food) {
     timeret.tv_nsec = 999999999/speed;
 
     while(state != EXIT){
+        initscr();
+        start_color();
+        raw(); // line buffering disabled
+        nodelay(stdscr, TRUE); //Dont wait for char
+        noecho(); // Don't echo input chars
+        getmaxyx(stdscr, y_max, x_max);
+        keypad(stdscr, TRUE); // making keys work
+        curs_set(0); // hide cursor
+        timeout(100);
+
         switch(state) {
         case INIT:
-            initscr();
-            start_color();
-            raw(); // line buffering disabled
-            nodelay(stdscr, TRUE); //Dont wait for char
-            noecho(); // Don't echo input chars
-            getmaxyx(stdscr, y_max, x_max);
-            keypad(stdscr, TRUE); // making keys work
-            curs_set(0); // hide cursor
-            timeout(100);
-
             // Setting height and width of the board
             x_offset = (x_max / 2) - (width / 2);
             y_offset = (y_max / 2) - (height / 2);
@@ -131,6 +163,7 @@ void game(int speed, int food) {
             draw_Gamewindow(window);
 
             // Init snake
+            int obstacle_x, obstacle_y;
             snake = init_snake(x_offset + (width / 2), y_offset + (height / 2));
             
             // Init foods
@@ -149,6 +182,35 @@ void game(int speed, int food) {
                 type = (rand() > RAND_MAX/2) ? Increase : Decrease;
                 new_food = create_food(food_x, food_y, type);
                 add_new_food(foods, new_food);
+            }
+            // generate obsticles
+            generate_points(&obstacle_x, &obstacle_y, width, height, x_offset, y_offset);
+            obstacles = init_obstacle(obstacle_x, obstacle_y);
+            for (i = 1; i < obstacle; i++) {
+                generate_points(&obstacle_x, &obstacle_y, width, height, x_offset, y_offset);
+                obstacles = add_obstacle(obstacles, obstacle_x, obstacle_y);
+                if((rand() % 2  + 1) == 2) {
+                    obstacle_size = (rand() % 16  + 1);
+                    for(int j = 0; j < obstacle_size; j++) {
+                        if(!snake_at_boarder(window, tail_x(obstacles) + 1, tail_y(obstacles)) &&
+                         !food_exists(foods, tail_x(obstacles) + 1, tail_y(obstacles)) &&
+                         !snake_colide(snake, obstacles))
+                            obstacles = add_obstacle(obstacles, tail_x(obstacles) + 1, tail_y(obstacles));
+                        else
+                            break;
+                    }
+                }
+                else {
+                    obstacle_size = (rand() % 16  + 1);
+                    for(int j = 0; j < obstacle_size; j++) {
+                        if(!snake_at_boarder(window, tail_x(obstacles), tail_y(obstacles) + 1) &&
+                         !food_exists(foods, tail_x(obstacles), tail_y(obstacles) + 1) &&
+                         !snake_colide(snake, obstacles))
+                            obstacles = add_obstacle(obstacles, tail_x(obstacles), tail_y(obstacles) + 1);
+                        else
+                            break;
+                    }
+                }
             }
             state = ALIVE;
             break;
@@ -213,6 +275,11 @@ void game(int speed, int food) {
                 state = INIT;
                 break;
             }
+            if (snake_colide(snake, obstacles)) {
+                lives--;
+                state = INIT;
+                break;
+            }
             if (lives == 0) {
                 state = DEAD;
                 break;
@@ -230,6 +297,7 @@ void game(int speed, int food) {
             mvprintw(0, 0, "score: %i", score);
             mvprintw(1, 0, "lives: %i", lives);
             draw_Gamewindow(window);
+            draw_snake(obstacles);
             draw_snake(snake);
             draw_food(foods);
             break;
@@ -246,12 +314,13 @@ void game(int speed, int food) {
             // sorts the scores
             sort(numbers.rbegin(), numbers.rend());
             // checks to see if the file should be updated
-            if(numbers.size() < 10) // if there are no numbers no file
+            if(numbers.size() < 10) { // if there are no numbers no file
                 numbers.push_back(score);
+                sort(numbers.rbegin(), numbers.rend());
+            }
             else if (score >= numbers.back()) {
                 // Replace the smallest number with the given number
                 numbers.back() = score;
-                sort(numbers.rbegin(), numbers.rend());
             }
             else if (numbers.size() == 0)
                 numbers.push_back(score);
@@ -263,12 +332,13 @@ void game(int speed, int food) {
             state = EXIT;
             break;
         case EXIT:
-            clear(); 
-            refresh();
-            endwin();
             break;
         }
         refresh();
         nanosleep(&timeret, NULL);
     }
+    clear();
+    refresh();
+    endwin();
+    gameover();
 }

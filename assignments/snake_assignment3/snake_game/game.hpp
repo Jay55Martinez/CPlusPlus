@@ -27,6 +27,7 @@
 * Additional copyrights may follow
 */
 void welcome();
-void game(int speed, int food);
+void gameover();
+void game(int speed, int food, int obstacle);
 void generate_points(int *food_x, int *food_y, int width, int height, int x_offset, int y_offset);
 enum State{INIT, ALIVE, DEAD, EXIT};

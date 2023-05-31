@@ -42,6 +42,19 @@ Snake *init_snake(int x, int y)
   Snake *tail2 = create_tail(x - 2, y);
   tail1->next = tail2;
   head->next = tail1;
+  head->color[0] = 0;
+  head->color[1] = 255;
+  head->color[2] = 0;
+  return head;
+}
+
+// Initialize obstacle
+Snake *init_obstacle(int x, int y)
+{
+  Snake *head = create_tail(x, y);
+  head->color[0] = 255;
+  head->color[1] = 0;
+  head->color[2] = 0;
   return head;
 }
 
@@ -50,8 +63,8 @@ Snake *create_tail(int x, int y)
 {
   Snake *snake = new Snake;
   snake->color[0] = 0;
-  snake->color[1] = 0;
-  snake->color[2] = 255;
+  snake->color[1] = 255;
+  snake->color[2] = 0;
   /* snake->color = {0, 0, 255}; */
   snake->symbol = '#';
   snake->next = NULL;
@@ -60,12 +73,22 @@ Snake *create_tail(int x, int y)
   return snake;
 }
 
+
 // Adds a tail to the snake
 Snake* add_tail(Snake* snake, int x, int y) {
   Snake *end = snake;
   while (end->next)
     end = end->next;
   end->next = create_tail(x, y);
+  return snake;
+}
+
+// Adds a tail to the snake
+Snake* add_obstacle(Snake* snake, int x, int y) {
+  Snake *end = snake;
+  while (end->next)
+    end = end->next;
+  end->next = init_obstacle(x, y);
   return snake;
 }
 
@@ -151,11 +174,14 @@ Snake *remove_tail(Snake *snake)
 // draws the snake on the board
 void draw_snake(Snake *snake)
 {
+  init_pair(2, COLOR_GREEN, COLOR_GREEN);
+  attron(COLOR_PAIR(2));
   while (snake)
   {
     mvprintw(snake->y, snake->x, "%c", snake->symbol);
     snake = snake->next;
   }
+  attroff(COLOR_PAIR(2));
 }
 
 int len(Snake* snake) {
@@ -186,6 +212,19 @@ int tail_y(Snake* snake) {
 bool eat_itself(Snake *snake)
 {
   Snake* temp = snake->next;
+  while(temp) {
+    if(temp->x == snake->x && temp->y == snake->y) {
+      return TRUE;
+    }
+    temp = temp->next;
+  }
+  return false;
+}
+
+// checks if one snake colides with another, then returns true
+bool snake_colide(Snake* snake, Snake* snake2)
+{
+  Snake* temp = snake2;
   while(temp) {
     if(temp->x == snake->x && temp->y == snake->y) {
       return TRUE;
