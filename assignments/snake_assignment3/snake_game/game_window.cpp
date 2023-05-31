@@ -34,7 +34,7 @@
 #include <cstdlib>
 #include <ncurses.h>
 #include <stdlib.h>
-#include <string>
+#include <cstring>
 #include "game_window.hpp"
 
 gamewindow_t *init_GameWindow(int upper_left_x, int upper_left_y, int width, int height)

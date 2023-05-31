@@ -31,11 +31,16 @@
 #include <cstdlib>
 #include <ctime>
 #include <fstream>
+#include <cstring>
+#include <vector>
+#include <algorithm>
+#include <iostream>
 #include "snake.hpp"
 #include "food.hpp"
 #include "game_window.hpp"
 #include "key.hpp"
 #include "game.hpp"
+using namespace std;
 
 void welcome() {
     static int row, col, x_offset, y_offset; // screen size and top left corner of 
@@ -69,6 +74,8 @@ void welcome() {
             break;
         }
         if(option == 'q') // quit
+            clear(); 
+            refresh();
             endwin();
             break;
     }
@@ -79,6 +86,7 @@ void generate_points(int *food_x, int *food_y, int width, int height, int x_offs
     *food_y = rand() % (height-1) + y_offset+1;
 }
 void game(int speed, int food) {
+    ofstream save_best_10;
     enum State state = INIT; // Set the initial state
     static int x_max, y_max; //Max screen size variables
     static int x_offset, y_offset; // distance between the top left corner of your screen and the start of the board
@@ -86,6 +94,8 @@ void game(int speed, int food) {
     int score = 0; // the score fo the game
     int update_speed = 100; // updates speed every 100
     int lives = 3; // snake lives
+    ifstream file; // score file
+    vector<int> numbers; // used to update the scores
     gamewindow_t *window; // Name of the board
     Snake *snake; // The snake
     Food *foods,*new_food; // List of foods (Not an array)
@@ -145,9 +155,12 @@ void game(int speed, int food) {
 
         case ALIVE:
             ch = get_char();
+            clear();
             /* Write your code here */
-            if(ch == 'q' || ch == 'Q') // quit the game code
+            if(ch == 'q' || ch == 'Q') { // quit the game code
                 state = EXIT;
+                break;
+            }
             if (ch == 'p' || ch == 'P') { // pause the game
                 while(1) {
                     ch = get_char();
@@ -164,8 +177,6 @@ void game(int speed, int food) {
             last_x = tail_x(snake);
             last_y = tail_y(snake);
             snake = move_snake(snake, ch);
-
-            clear();
             // checks if snake head is where food is
             if (food_exists(foods, snake->x, snake->y)) {
                 // remove food, grow snake, increase score
@@ -190,14 +201,17 @@ void game(int speed, int food) {
             if (eat_itself(snake)) {
                 lives--;
                 state = INIT;
+                break;
             }
             if (snake_at_boarder(window, snake->x, snake->y)) {
                 lives--;
                 state = INIT;
+                break;
             }
             if (len(snake) <= 1) {
                 lives--;
                 state = INIT;
+                break;
             }
             if (lives == 0) {
                 state = DEAD;
@@ -210,7 +224,7 @@ void game(int speed, int food) {
                 update_speed += 100;
             }
             // Draw everything on the screen
-            mvprintw(0, x_max - 50,
+            mvprintw(0, x_max - strlen("snake head x:    snake head y:    snake tail x:    snake tail y:     "),
              "snake head x: %i snake head y: %i snake tail x: %i snake tail y: %i", snake->x, snake->y, last_x, last_y);
             mvprintw(2, 0, "Key entered: %c", ch);
             mvprintw(0, 0, "score: %i", score);
@@ -220,7 +234,32 @@ void game(int speed, int food) {
             draw_food(foods);
             break;
         case DEAD:
-            
+            // saves the score to the file if bester than top 10
+            file.open("./saves/save_best_10.game");
+            if (file) {
+                int current_number;
+                while (file >> current_number) {
+                    numbers.push_back(current_number);
+                }
+            }
+            file.close();
+            // sorts the scores
+            sort(numbers.rbegin(), numbers.rend());
+            // checks to see if the file should be updated
+            if(numbers.size() < 10) // if there are no numbers no file
+                numbers.push_back(score);
+            else if (score >= numbers.back()) {
+                // Replace the smallest number with the given number
+                numbers.back() = score;
+                sort(numbers.rbegin(), numbers.rend());
+            }
+            else if (numbers.size() == 0)
+                numbers.push_back(score);
+            save_best_10.open("./saves/save_best_10.game");
+            for (const auto& num : numbers) {
+                save_best_10<<num<<"\n";
+            }
+            save_best_10.close();
             state = EXIT;
             break;
         case EXIT:

@@ -32,7 +32,7 @@
  */
 
 /* Code: */
-
+#include <string>
 #define WELL_WIDTH 50
 #define WELL_HEIGHT 25
 
