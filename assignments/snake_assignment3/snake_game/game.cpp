@@ -29,7 +29,6 @@
 #include <ncurses.h>
 #include <cstdio>
 #include <cstdlib>
-#include <string>
 #include <ctime>
 #include <fstream>
 #include "snake.hpp"
@@ -80,7 +79,6 @@ void generate_points(int *food_x, int *food_y, int width, int height, int x_offs
     *food_y = rand() % (height-1) + y_offset+1;
 }
 void game(int speed, int food) {
-    ofstream MyFile("filename.txt");
     enum State state = INIT; // Set the initial state
     static int x_max, y_max; //Max screen size variables
     static int x_offset, y_offset; // distance between the top left corner of your screen and the start of the board
@@ -212,7 +210,7 @@ void game(int speed, int food) {
                 update_speed += 100;
             }
             // Draw everything on the screen
-            mvprintw(0, x_max - strlen("snake head x:     snake head y:     snake tail x:     snake tail y:    "),
+            mvprintw(0, x_max - 50,
              "snake head x: %i snake head y: %i snake tail x: %i snake tail y: %i", snake->x, snake->y, last_x, last_y);
             mvprintw(2, 0, "Key entered: %c", ch);
             mvprintw(0, 0, "score: %i", score);
