@@ -3,7 +3,7 @@ CC=g++
 CFLAGS= -I$(IDIR) -g -std=c++11 -O0
 
 ODIR=.
-NAME=Ncurses
+NAME=Module23
 LIBS=-lncurses
 
 _DEPS = 
