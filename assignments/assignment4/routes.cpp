@@ -32,6 +32,12 @@ class Distance {
 	int distance;
 };
 
+struct compare { // function object
+    bool operator() (Distance& first, Distance& second) {
+        return first.getDistance()>second.getDistance();
+    }
+};
+
 class Routes {
 	public:
 	// instantiate class variables
@@ -97,13 +103,14 @@ class Routes {
     map<string, int> shortestDist;
     string startingPoint = temp.begin()->first;
     int currentDistance = 0;
-    priority_queue<Distance> pq;
+    priority_queue<Distance, vector<Distance>, compare> pq;
     shortestDist[startingPoint] = currentDistance; // Set the starting point to 0
 
     // Load the queue with all the connecting routes from the starting point
     for (const auto& dist : temp[startingPoint]) {
         pq.push(dist);
     }
+	temp.erase(startingPoint);
 
     while (!pq.empty()) {
         Distance current = pq.top();
@@ -117,6 +124,8 @@ class Routes {
         }
 
         for (auto dist : temp[current.getTarget()]) {
+			if (dist.getTarget() == startingPoint)
+				continue;
             Distance newDist(dist.getTarget(), dist.getDistance() + currentDistance);
             pq.push(newDist);
         }
