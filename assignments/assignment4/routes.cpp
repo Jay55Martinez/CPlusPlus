@@ -8,146 +8,140 @@
 using namespace std;
 
 class Distance {
-	public:
-	Distance(string city, int dist) { target = city; distance = dist;}
-
-	string getTarget() {
-		return target;
-	}
-
-	int getDistance() {
-		return distance;
-	}
-
-	int compare (Distance other) {
-		return distance - other.distance; 
-	}
-
-	bool operator<(const Distance& other) const {
-        return distance > other.distance;
+public:
+    Distance(string city, int dist) {
+        target = city;
+        distance = dist;
     }
 
-	private:
-	string target;
-	int distance;
+    string getTarget() {
+        return target;
+    }
+
+    int getDistance() {
+        return distance;
+    }
+
+    int compare(Distance other) {
+        return distance- other.distance;
+    }
+
+    bool operator<(const Distance& other) const {
+        return distance>other.distance;
+    }
+
+private:
+    string target;
+    int distance;
 };
 
 struct compare { // function object
-    bool operator() (Distance& first, Distance& second) {
-        return first.getDistance()>second.getDistance();
+    bool operator()(Distance& first, Distance& second) {
+        return first.getDistance() > second.getDistance();
     }
 };
 
 class Routes {
-	public:
-	// instantiate class variables
-	Routes(string fileName) {		
-		inputFile = fileName;
-	}
+public:
+    Routes(string fileName) {
+        inputFile = fileName;
+    }
 
-	// read map.txt to populate routeMap
-	void populateFiles() {
+	// populates the route map
+    void populateFiles() {
+		// read map.txt to populate routeMap
         ifstream map_file(inputFile);
-        if (!map_file.is_open()) {
+        if(!map_file.is_open()) {
             throw invalid_argument("File does not exist");
-        }
-        else {
+        } else {
             string route_info;
-            while (getline(map_file, route_info)) {
+            while(getline(map_file, route_info)) {
                 string from, to;
                 int dist;
                 size_t start = 0;
                 size_t end = route_info.find(" ");
 
-                if (end != string::npos) {
-                    from = route_info.substr(start, end - start); // starting point
+                if(end != string::npos) {
+                    from = route_info.substr(start, end - start);
                     start = end + 1;
                     end = route_info.find(" ", start);
-                    if (end != string::npos) {
-                        to = route_info.substr(start, end - start); // ending point
+                    if(end != string::npos) {
+                        to = route_info.substr(start, end - start);
                         start = end + 1;
-                        dist = stoi(route_info.substr(start)); // distance int
+                        dist = stoi(route_info.substr(start));
 
                         Distance new_dist(to, dist);
 
-                        if (routeMap.find(from) == routeMap.end()) {
-                            // 'from' does not exist in the routeMap, create a new set with new_dist
+                        if(route_map.find(from) == route_map.end()) {
                             set<Distance> set_dist{ new_dist };
-                            routeMap[from] = set_dist;
+                            route_map[from] = set_dist;
+                        } else {
+                            route_map[from].insert(new_dist);
                         }
-                        else {
-                            // 'from' already exists in the routeMap, append new_dist to its set
-                            routeMap[from].insert(new_dist);
+
+                        // Add reverse connection as well
+                        Distance reverse_dist(from, dist);
+                        if(route_map.find(to) == route_map.end()) {
+                            set<Distance> set_reverse_dist{ reverse_dist };
+                            route_map[to] = set_reverse_dist;
+                        } else {
+                            route_map[to].insert(reverse_dist);
                         }
                     }
                 }
             }
-			for(auto& route : routeMap) {
-				cout<<route.first<<": ";
-				for(Distance dest : route.second) {
-					cout<<dest.getTarget()<<" "<<dest.getDistance()<<", ";
-				}
-				cout<<endl;
-			}
             map_file.close();
         }
     }
 
-	// implement the algorithm using priority queue  
-	//Map<string, Integer> shortestKnownDistance = new Map<string,Integer>();
-	map<string, int> findShortestKnownDistance() {
-    // Create a copy of routeMap to track visited cities
-    map<string, set<Distance>> temp = routeMap;
+	// returns the shortest route from the start point 
+    map<string, int> findShortestKnownDistance() {
+		// declare variables
+        map<string, set<Distance>> temp = route_map;
+        map<string, int> shortest_dist;
+        string starting_point = temp.begin()->first;
+        int current_dist = 0;
+        priority_queue<Distance, vector<Distance>, compare> pq; // smallest distance comes first
+        shortest_dist[starting_point] = current_dist;
 
-    // Initialize variables
-    map<string, int> shortestDist;
-    string startingPoint = temp.begin()->first;
-    int currentDistance = 0;
-    priority_queue<Distance, vector<Distance>, less<Distance>> pq;
-    shortestDist[startingPoint] = currentDistance; // Set the starting point to 0
-
-    // Load the queue with all the connecting routes from the starting point
-    for (const auto& dist : temp[startingPoint]) {
-        pq.emplace(dist);
-    }
-
-    while (!pq.empty()) {
-        Distance current = pq.top();
-        pq.pop();
-        currentDistance = current.getDistance();
-
-        if (shortestDist.find(current.getTarget()) == shortestDist.end()) {
-            shortestDist[current.getTarget()] = currentDistance;
-			
-			for (auto dist : temp[current.getTarget()]) {
-				if (dist.getTarget() == startingPoint)
-					continue;
-				Distance newDist(dist.getTarget(), dist.getDistance() + currentDistance);
-				pq.emplace(newDist);
-			}
-        } else if (currentDistance < shortestDist[current.getTarget()]) {
-            shortestDist[current.getTarget()] = currentDistance; // Update new shortest distance to destination
+		// add to the queue
+        for(const auto& dist : temp[starting_point]) {
+            pq.push(dist);
         }
+
+		// start loop till queue is empty
+        while(!pq.empty()) {
+            Distance current = pq.top();
+            pq.pop();
+            current_dist = current.getDistance();
+
+			// if it is not in the map add it 
+            if(shortest_dist.find(current.getTarget()) == shortest_dist.end()) {
+                shortest_dist[current.getTarget()] = current_dist;
+				// add all other connected nodes
+                for(auto dist : temp[current.getTarget()]) {
+                    Distance new_dist(dist.getTarget(), dist.getDistance() + current_dist);
+                    pq.push(new_dist);
+                }
+			// check if the current version is smaller than the one stored in the map
+            } else if(current_dist<shortest_dist[current.getTarget()]) {
+                shortest_dist[current.getTarget()] = current_dist;
+            }
+        }
+        return shortest_dist;
     }
 
-    return shortestDist;
-}
-
-
-	private:
-	map<string, set<Distance>> routeMap; 
-	string inputFile;
-	string startCity;
+private:
+    map<string, set<Distance>> route_map;
+    string inputFile;
 };
 
-	
 int main() {
-	// test your methods here
-	Routes route("map.txt");
-	route.populateFiles();
-	map<string, int> shortest = route.findShortestKnownDistance();
-	for(auto& s : shortest) {
-		cout<<s.first<<" : "<<s.second<<endl;
-	}
-	return 0;
+    Routes route("map.txt");
+    route.populateFiles();
+    map<string, int> shortest = route.findShortestKnownDistance();
+    for(auto& s : shortest) {
+        cout<<s.first<<": "<<s.second<<endl;
+    }
+    return 0;
 }
