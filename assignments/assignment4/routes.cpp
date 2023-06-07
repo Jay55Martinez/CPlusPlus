@@ -24,7 +24,7 @@ class Distance {
 	}
 
 	bool operator<(const Distance& other) const {
-        return distance < other.distance;
+        return distance > other.distance;
     }
 
 	private:
@@ -103,14 +103,13 @@ class Routes {
     map<string, int> shortestDist;
     string startingPoint = temp.begin()->first;
     int currentDistance = 0;
-    priority_queue<Distance, vector<Distance>, compare> pq;
+    priority_queue<Distance, vector<Distance>, less<Distance>> pq;
     shortestDist[startingPoint] = currentDistance; // Set the starting point to 0
 
     // Load the queue with all the connecting routes from the starting point
     for (const auto& dist : temp[startingPoint]) {
-        pq.push(dist);
+        pq.emplace(dist);
     }
-	temp.erase(startingPoint);
 
     while (!pq.empty()) {
         Distance current = pq.top();
@@ -119,18 +118,16 @@ class Routes {
 
         if (shortestDist.find(current.getTarget()) == shortestDist.end()) {
             shortestDist[current.getTarget()] = currentDistance;
+			
+			for (auto dist : temp[current.getTarget()]) {
+				if (dist.getTarget() == startingPoint)
+					continue;
+				Distance newDist(dist.getTarget(), dist.getDistance() + currentDistance);
+				pq.emplace(newDist);
+			}
         } else if (currentDistance < shortestDist[current.getTarget()]) {
             shortestDist[current.getTarget()] = currentDistance; // Update new shortest distance to destination
         }
-
-        for (auto dist : temp[current.getTarget()]) {
-			if (dist.getTarget() == startingPoint)
-				continue;
-            Distance newDist(dist.getTarget(), dist.getDistance() + currentDistance);
-            pq.push(newDist);
-        }
-
-        temp.erase(current.getTarget());
     }
 
     return shortestDist;
