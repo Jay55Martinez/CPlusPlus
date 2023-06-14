@@ -55,54 +55,41 @@ void window_s::draw() const {
 
 // returns all of the cords that are out of bounds
 vector<pair<int, int>> window_s::get_out_of_bounds() const {
+    int offset = 16;
     vector<pair<int, int>> cords;
-    
-    for (int row = upper_left_x; row <= upper_left_x + width; row++) {
-        cords.push_back(make_pair(upper_left_y, row));
-    }
 
-    // Check the left wall of the window
-    for (int col = upper_left_y; col <= upper_left_y + height; col++) {
-        cords.push_back(make_pair(col, upper_left_x));
-    }
+    for (int i = 0; i < offset; i++) {
+        int startX = this->upper_left_x - i;
+        int startY = this->upper_left_y - i;
+        int endX = this->upper_left_x + this->width + i;
+        int endY = this->upper_left_y + this->height + i;
 
-    // Check the right wall of the window
-    for (int col = upper_left_y; col <= upper_left_y + height; col++) {
-        cords.push_back(make_pair(col, upper_left_x + width));
-    }
-
-    // Check the bottom wall of the window
-    for (int row = upper_left_x; row <= upper_left_x + width; row++) {
-        cords.push_back(make_pair(upper_left_y + height, row));
-    }
-
-    // Check the area above the window
-    for (int row = 0; row < upper_left_y; row++) {
-        for (int col = 0; col < width; col++) {
-            cords.push_back(make_pair(row, col));
+        // Draw top side of the window
+        for (int x = startX; x <= endX; x++) {
+            cords.push_back(make_pair(startY, x));
         }
-    }
 
-    // Check the area below the window
-    for (int row = upper_left_y + height; row < LINES; row++) {
-        for (int col = 0; col < width; col++) {
-            cords.push_back(make_pair(row, col));
+        // Draw bottom side of the window
+        for (int x = startX; x <= endX; x++) {
+            cords.push_back(make_pair(endY, x));
         }
-    }
 
-    // Check the area to the left of the window
-    for (int row = upper_left_y; row < upper_left_y + height; row++) {
-        for (int col = 0; col < upper_left_x; col++) {
-            cords.push_back(make_pair(row, col));
+        // Draw left side of the window
+        for (int y = startY; y <= endY; y++) {
+            cords.push_back(make_pair(y, startX));
         }
-    }
 
-    // Check the area to the right of the window
-    for (int row = upper_left_y; row < upper_left_y + height; row++) {
-        for (int col = upper_left_x + width; col < COLS; col++) {
-            cords.push_back(make_pair(row, col));
+        // Draw right side of the window
+        for (int y = startY; y <= endY; y++) {
+            cords.push_back(make_pair(y, endX));
         }
     }
 
     return cords;
 }
+
+// getters
+int window_s::get_width() const { return this->width; }
+int window_s::get_height() const { return this->height; }
+int window_s::get_offsetx() const { return this->upper_left_x; }
+int window_s::get_offsety() const { return this->upper_left_y; }

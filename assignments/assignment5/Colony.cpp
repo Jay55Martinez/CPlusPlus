@@ -3,6 +3,7 @@
 #include "Colony.hpp"
 #include "Ant.hpp"
 #include "DoodleBug.hpp"
+#include "QAnt.hpp"
 #include <ncurses.h>
 #include <string>
 #include <algorithm>
@@ -11,12 +12,31 @@ using namespace std;
 // constructor for Colony
 Colony::Colony(int num_ants, int num_doodle, window_s w) {
     // TODO
+    int y = rand() % w.get_width() + w.get_offsetx()+1;
+    int x = rand() % w.get_height() + w.get_offsety()+1;
     this->walls = w.get_out_of_bounds();
-    add_bug("Ant", new Ant(12, 30, false));
-    add_bug("Ant", new Ant(19, 38, true));
-    add_bug("Ant", new Ant(21, 32, false));
-    add_bug("Ant", new Ant(17, 28, true));
-    add_bug("DoodleBug", new DoodleBug(20, 29));
+    // spawn ants
+    for(int a=0; a<num_ants-1; a++) {
+        while(colide(x, y)) {
+            y = rand() % w.get_width() + w.get_offsetx()+1;
+            x = rand() % w.get_height() + w.get_offsety()+1;
+        }
+        spawn_ant_random(x, y);
+    }
+    // spawn doodlebugs
+    for(int d=0; d<num_doodle; d++) {
+        while(colide(x, y)) {
+            y = rand() % w.get_width() + w.get_offsetx()+1;
+            x = rand() % w.get_height() + w.get_offsety()+1;
+        }
+        add_bug("DoodleBug", new DoodleBug(x, y));
+    }
+    // Add 1 queen
+    while(colide(x, y)) {
+            y = rand() % w.get_width() + w.get_offsetx()+1;
+            x = rand() % w.get_height() + w.get_offsety()+1;
+    }
+    add_bug("Ant", new QAnt(x, y));
 }
 
 // draws all of the bugs on the screen
@@ -31,6 +51,21 @@ void Colony::add_bug(string type, Bug* b) {
     this->bugs.push_back(pair<string, Bug*>(type, b));
 }
 
+// spawns an ant with the distrubution odds of 70% females 29% males and 1% Queen
+void Colony::spawn_ant_random(int x, int y) {
+    int r = rand()%99 + 1; // 1 - 100
+    if(r == 1) { // queen ant
+        add_bug("Ant", new QAnt(x, y));
+    }
+    else if(1 < r && r < 71) { // female worker ant
+        add_bug("Ant", new Ant(x, y, true)); 
+    }
+    else { // male ant
+        add_bug("Ant", new Ant(x, y, false));
+    }
+
+}
+
 // returns the size of the colony
 int Colony::size() const {
     return this->bugs.size();
@@ -38,8 +73,11 @@ int Colony::size() const {
 
 // returns true if there are no ants in the colony
 bool Colony::all_ant_dead() const {
-    //TODO
-    return true;
+    for(auto& bug : bugs) {
+        if(bug.first == "Ant")
+            return true;
+    }
+    return false;
 }
 
 // returns true if the bug would colide with another bug or the wall
@@ -69,6 +107,20 @@ bool Colony::ant_at(int x, int y) const {
         }
     }
     return false;
+}
+
+// returns false if is a male / true if female
+bool Colony::get_gender(int x, int y) {
+    pair<int, int> current_cord = make_pair(x, y);
+    // check if it will colide with anther bug
+    for(const auto& bug : bugs) {
+        if(bug.first == "Ant") {
+            if(current_cord == bug.second->get_cord()) {
+                return bug.second->get_sex();
+            }
+        }
+    }
+    return true;
 }
 
 // returns the cords of any ants that surround the given cord returns the same cords if no ants found

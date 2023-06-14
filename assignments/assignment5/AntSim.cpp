@@ -9,23 +9,32 @@ using namespace std;
 
 int main(void) {
     srand(time(0));
-    window_s w(10, 10, 100, 30);
-    Ant* b = new Ant(30, 23, true);
-    Colony* c = new Colony(0 , 0, w);
+    window_s w(10, 10, 110, 30);
     char q;
-    //Init board
+    int ants;
+    int doodles;
+    int turn = 0;
     initscr();
+    mvprintw(0, 0, "Enter Number of Ants>");
+    scanw("%d", &ants);
+    mvprintw(0, 0, "Enter Number of DoodleBugs>");
+    scanw("%d", &doodles);
+    mvprintw(0, 0, "                             ");
+    mvprintw(0, 0, "Enter q to quit:");
+    Colony* c = new Colony(ants , doodles, w);
+    //Init board
     noecho();
     curs_set(0);
     keypad(stdscr, TRUE);
     w.draw();
     c->draw();
     while(q != 'q') {
+        mvprintw(1, 0, "Cycle: %d", turn);
         q = getch();
         c->step();
         refresh();
+        turn++;
     }
     endwin();
-    delete b;
     delete c;
 }

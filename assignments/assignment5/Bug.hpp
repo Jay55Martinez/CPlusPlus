@@ -30,6 +30,7 @@ on top of each other.
 #define COLONY_HPP
 #include "Colony.hpp"
 #include <utility>
+#include <string>
 #include <ncurses.h>
 using namespace std;
 

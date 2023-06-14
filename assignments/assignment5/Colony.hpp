@@ -21,7 +21,9 @@ given cord. if no ant is present returns the same cords
 + void move() : moves the doodlebugs first, removes all eaten ants then moves the ants
 + void step() : runs a whole cycle by running moves, starves, breeds
 + void remove_bug_at(int x, int y) : removes a bug from the list at the given cord
-
++ void spawn_ant_random(int x, int y) : spawns an ant with the distrubution odds of 70% females 29% males and 1% Queen
+at specifed x, y cords
++ bool get_gender(int x, int y) : gets the gender of the bug at given cord
 */
 #ifndef BUG_HPP
 #define BUG_HPP
@@ -61,6 +63,10 @@ class Colony {
         void remove_bug_at(pair<int, int> c);
         // steps through a whole cycle, move, starve, breed
         void step();
+        // spawns an ant with the distrubution odds of 70% females 29% males and 1% Queen
+        void spawn_ant_random(int x, int y);
+        // gets the gender of the bug at the given cord
+        bool get_gender(int x, int y);
     private:
         vector<pair<string, Bug*>> bugs;
         vector<pair<int, int>> walls;

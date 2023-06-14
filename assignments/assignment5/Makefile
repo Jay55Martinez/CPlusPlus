@@ -9,7 +9,7 @@ LIBS=-lncurses
 _DEPS = 
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = window.o Bug.o DoodleBug.o Ant.o AntSim.o Colony.o
+_OBJ = window.o Bug.o DoodleBug.o Ant.o AntSim.o Colony.o QAnt.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 $(ODIR)/%.o: %.cpp $(DEPS)

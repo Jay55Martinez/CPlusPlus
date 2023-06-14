@@ -48,15 +48,13 @@ void DoodleBug::starve(bool eaten, Colony* c) {
 
 // if breed conditions are true then adds bugs to the Colony
 void DoodleBug::breed(Colony* c) {
-    mvprintw(0, 0, "%i", this->last_eaten);
-    mvprintw(1, 0, "%i", this->survive_time);
     if((survive_time % 10) == 0 ) {
         // spawns 2 doodlebugs 
         for(int i = 0; i < 2; i++) {
             mvprintw(2, 0, "Here");
             int dx = rand()%15 + 1;
             int dy = rand()%15 + 1;
-            while(!c->colide(get_cord().first + dx, get_cord().second + dy)) {
+            while(c->colide(get_cord().first + dx, get_cord().second + dy)) {
                 dx = rand()%15 + 1;
                 dy = rand()%15 + 1;
             }
