@@ -24,8 +24,9 @@ AntSim: $(OBJ)
 
 clean:
 	rm -f *~ core $(INCDIR)/*~ 
-	rm -f  snake_game
+	rm -f  AntSim
 	rm -f *.o
 
 etags: 
 	find . -type f -iname "*.[ch]" | xargs etags --append  
+ 

@@ -30,6 +30,7 @@ at specifed x, y cords
 #include "Bug.hpp"
 #include "window.hpp"
 #include <vector>
+#include <string>
 #include <utility>
 using namespace std;
 

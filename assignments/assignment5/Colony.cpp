@@ -5,7 +5,6 @@
 #include "DoodleBug.hpp"
 #include "QAnt.hpp"
 #include <ncurses.h>
-#include <string>
 #include <algorithm>
 using namespace std;
 
