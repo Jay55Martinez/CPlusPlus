@@ -14,7 +14,7 @@ int main(void) {
     int ants;
     int doodles;
     int turn = 0;
-    initscr();
+    // initscr();
     mvprintw(0, 0, "Enter Number of Ants>");
     scanw("%d", &ants);
     mvprintw(0, 0, "Enter Number of DoodleBugs>");
