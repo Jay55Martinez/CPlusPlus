@@ -22,6 +22,9 @@ Colony::Colony(int num_ants, int num_doodle, window_s w) {
         }
         spawn_ant_random(x, y);
     }
+    
+    y = rand() % w.get_width() + w.get_offsetx()+1;
+    x = rand() % w.get_height() + w.get_offsety()+1;
     // spawn doodlebugs
     for(int d=0; d<num_doodle; d++) {
         while(colide(x, y)) {

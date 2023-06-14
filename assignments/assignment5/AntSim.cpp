@@ -14,15 +14,16 @@ int main(void) {
     int ants;
     int doodles;
     int turn = 0;
-    // initscr();
+    initscr();
     mvprintw(0, 0, "Enter Number of Ants>");
-    scanw("%d", &ants);
+    scanw("%i", &ants);
     mvprintw(0, 0, "Enter Number of DoodleBugs>");
-    scanw("%d", &doodles);
+    scanw("%i", &doodles);
     mvprintw(0, 0, "                             ");
     mvprintw(0, 0, "Enter q to quit:");
+    mvprintw(3, 0, "Enter any key to step:");
     Colony* c = new Colony(ants , doodles, w);
-    //Init board
+    // Init board
     noecho();
     curs_set(0);
     keypad(stdscr, TRUE);

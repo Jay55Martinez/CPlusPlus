@@ -21,8 +21,10 @@ void DoodleBug::move(Colony* c) {
     else { // rand seed based on time
         int dx = rand()%3 - 1; // range -1 - 1
         int dy = rand()%3 - 1; // range -1 - 1
+        int max_attempts = 100; 
+        int attempts = 0; 
         // makes sure that the bug always makes a valid move
-        while(c->colide(get_cord().first + dx, get_cord().second + dy)) {
+        while(c->colide(get_cord().first + dx, get_cord().second + dy) && attempts < max_attempts) {
             dx = rand()%3 - 1; // range -1 - 1
             dy = rand()%3 - 1; // range -1 - 1
         }
@@ -51,7 +53,6 @@ void DoodleBug::breed(Colony* c) {
     if((survive_time % 10) == 0 ) {
         // spawns 2 doodlebugs 
         for(int i = 0; i < 2; i++) {
-            mvprintw(2, 0, "Here");
             int dx = rand()%15 + 1;
             int dy = rand()%15 + 1;
             while(c->colide(get_cord().first + dx, get_cord().second + dy)) {
