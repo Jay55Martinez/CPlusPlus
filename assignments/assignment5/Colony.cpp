@@ -9,34 +9,35 @@
 using namespace std;
 
 // constructor for Colony
-Colony::Colony(int num_ants, int num_doodle, window_s w) {
+Colony::Colony(int num_ants, int num_doodle, window_s* w) {
     // TODO
-    int y = rand() % w.get_width() + w.get_offsetx()+1;
-    int x = rand() % w.get_height() + w.get_offsety()+1;
-    this->walls = w.get_out_of_bounds();
+    this->window = w;
+    int y = rand() % w->get_width() + w->get_offsetx()+1;
+    int x = rand() % w->get_height() + w->get_offsety()+1;
+    this->walls = w->get_out_of_bounds();
     // spawn ants
     for(int a=0; a<num_ants-1; a++) {
         while(colide(x, y)) {
-            y = rand() % w.get_width() + w.get_offsetx()+1;
-            x = rand() % w.get_height() + w.get_offsety()+1;
+            y = rand() % w->get_width() + w->get_offsetx()+1;
+            x = rand() % w->get_height() + w->get_offsety()+1;
         }
         spawn_ant_random(x, y);
     }
     
-    y = rand() % w.get_width() + w.get_offsetx()+1;
-    x = rand() % w.get_height() + w.get_offsety()+1;
+    y = rand() % w->get_width() + w->get_offsetx()+1;
+    x = rand() % w->get_height() + w->get_offsety()+1;
     // spawn doodlebugs
     for(int d=0; d<num_doodle; d++) {
         while(colide(x, y)) {
-            y = rand() % w.get_width() + w.get_offsetx()+1;
-            x = rand() % w.get_height() + w.get_offsety()+1;
+            y = rand() % w->get_width() + w->get_offsetx()+1;
+            x = rand() % w->get_height() + w->get_offsety()+1;
         }
         add_bug("DoodleBug", new DoodleBug(x, y));
     }
     // Add 1 queen
     while(colide(x, y)) {
-            y = rand() % w.get_width() + w.get_offsetx()+1;
-            x = rand() % w.get_height() + w.get_offsety()+1;
+            y = rand() % w->get_width() + w->get_offsetx()+1;
+            x = rand() % w->get_height() + w->get_offsety()+1;
     }
     add_bug("Ant", new QAnt(x, y));
 }
@@ -86,9 +87,14 @@ bool Colony::all_ant_dead() const {
 bool Colony::colide(int x, int y) const {
     pair<int, int> current_cord = make_pair(x, y);
     // check if it will colide with the wall
-    for(const auto& wall : walls) {
-        if(current_cord == wall)
-            return true;
+    if(y <= window->get_offsetx() || x <= window->get_offsety()) {
+        mvprintw(5, 0, "%i <= %i || %i <= %i : TRUE", y, window->get_offsetx(), x, window->get_offsety());
+        return true;
+    }
+    else if(y >= (window->get_offsetx() + window->get_width()) ||
+            x >= (window->get_offsety() + window->get_height())) {
+        mvprintw(5, 0, "Other one True");
+        return true;
     }
     // check if it will colide with anther bug
     for(const auto& bug : bugs) {
@@ -174,8 +180,5 @@ void Colony::step() {
     });
     // checks if the bugs should breed
     int s = bugs.size();
-    for (int i = 0; i < s; i++) {
-    bugs[i].second->breed(this);
-    }
     this->draw();
 }

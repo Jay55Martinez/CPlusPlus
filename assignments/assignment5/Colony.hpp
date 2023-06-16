@@ -42,7 +42,7 @@ class DoodleBug;
 class Colony {
     public:
         // constructor
-        Colony(int num_ants, int num_doodle, window_s w);
+        Colony(int num_ants, int num_doodle, window_s* w);
         // draws all of the 
         void draw() const;
         // adds a bug to the set of bugs
@@ -71,5 +71,6 @@ class Colony {
     private:
         vector<pair<string, Bug*>> bugs;
         vector<pair<int, int>> walls;
+        window_s* window;
 };
 #endif

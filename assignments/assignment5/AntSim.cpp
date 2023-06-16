@@ -9,7 +9,7 @@ using namespace std;
 
 int main(void) {
     srand(time(0));
-    window_s w(10, 10, 110, 30);
+    window_s* w = new window_s(10, 10, 110, 30);
     char q;
     int ants;
     int doodles;
@@ -27,7 +27,7 @@ int main(void) {
     noecho();
     curs_set(0);
     keypad(stdscr, TRUE);
-    w.draw();
+    w->draw();
     c->draw();
     while(q != 'q') {
         mvprintw(1, 0, "Cycle: %d", turn);
@@ -38,4 +38,5 @@ int main(void) {
     }
     endwin();
     delete c;
+    delete w;
 }
