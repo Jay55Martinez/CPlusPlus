@@ -3,17 +3,24 @@
 // Check for possible compiler errors, logical errors and rectify them
 // Re-factor the code by adding few comments (make it readable) and
 // provide list of most important fixes (in comments)
-
+/*
+Lists of fixes:
+fixed the add template functions.
+added getters to the person class
+made the + operator actual add the ages rather than subtract
+*/
 #include <iostream>
 #include <string>
 using namespace std;
+
 template <class T>
-T add(T x, y)
+T add(T x, T y)
 {
-   U sum;
+   T sum;
    sum = x + y;
    return sum;
 }
+
 class Person
 {
    friend ostream &operator<<(ostream &, const Person &);
@@ -25,24 +32,31 @@ private:
 
 public:
    void setValues(string, string, int);
-   Person operator+(person);
+   Person operator+(Person);
+   string get_last() { return this->lastName; }
+   string get_first() { return this->firstName; }
+   int get_age() { return this-> age; }
 };
+
 ostream &operator<<(ostream &out, Person &per)
 {
-   out << per.firstName << " " << per.lastName << " " << per.age << " years old" << endl;
+   out << per.get_first()<< " " << per.get_last() << " " << per.get_age() << " years old" << endl;
+   return out;
 }
+
 void Person::setValues(string last, string first, int age)
 {
    lastName = last;
    firstName = first;
    age = age;
 }
+
 Person Person::operator+(Person p)
 {
    Person temp;
    temp.lastName = "of Age";
    temp.firstName = "Sum";
-   age = p.age - temp.age;
+   age = p.age + temp.age;
    return temp;
 }
 

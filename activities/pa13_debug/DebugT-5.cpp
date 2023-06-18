@@ -8,16 +8,23 @@
 // Name: Hyundai model Year: 2020 Mileage: 23
 // Name: Ford model Year: 2012 Miles driven: 20000
 // Name: Ford model Year: 2017 Miles driven: 10000
-
+/*
+List of bugs: 
+fix constructor for car
+operator= was not using reference
+printCarInfo was not using reference
+*/
 #include <iostream>
-
 using namespace std;
 
+// Base class: car
 class car
 {
 private:
     string name;
     int modelYear;
+
+protected:
     void assign(const car &c)
     {
         name = c.name;
@@ -27,9 +34,12 @@ private:
 public:
     car(const string &n, const int my) : name(n), modelYear(my) {}
 
+    string get_name() const { return name; }
+    int get_modelYear() const { return modelYear; }
+
     virtual void print() const
     {
-        cout << "Name: " << name << " model Year: " << modelYear << endl;
+        cout << "Name: " << name << " Model Year: " << modelYear << endl;
     }
 
     virtual const car &operator=(const car &c)
@@ -40,6 +50,7 @@ public:
     }
 };
 
+// Derived class: sedan
 class sedan : public car
 {
 private:
@@ -48,25 +59,27 @@ private:
 public:
     sedan(const string &n, const int my, const int m) : car(n, my), mileage(m) {}
 
-    virtual void print() const
+    void print() const override
     {
-        cout << "Name: " << name << " model Year: " << modelYear << " Mileage: " << mileage << endl;
+        cout << "Name: " << get_name() << " Model Year: " << get_modelYear() << " Mileage: " << mileage << endl;
     }
 };
 
+// Derived class: suv
 class suv : public car
 {
+private:
     int miles;
 
 public:
-    suv(const string &n, const int my, const int m) : miles(m) {}
+    suv(const string &n, const int my, const int m) : car(n, my), miles(m) {}
 
-    virtual void print() const
+    void print() const override
     {
-        cout << "Name: " << name << " model Year: " << modelYear << " Miles driven: " << miles << endl;
+        cout << "Name: " << get_name() << " Model Year: " << get_modelYear() << " Miles driven: " << miles << endl;
     }
 
-    virtual const suv &operator=(const car c)
+    const suv &operator=(const car &c) override
     {
         if (const suv *b = dynamic_cast<const suv *>(&c))
         {
@@ -74,33 +87,37 @@ public:
         }
         return *this;
     }
-
-protected:
-    void assign(const suv &c)
-    {
-        car::assign(c);
-        miles = c.miles;
-    }
 };
 
-void printCarInfo(const car c)
+// Function to print car information
+void printCarInfo(const car &c)
 {
     c.print();
 }
 
 int main()
 {
-    car tesla = car("tesla", 2019);
+    // Create car objects
+    car tesla = car("Tesla", 2019);
     sedan hyundai = sedan("Hyundai", 2020, 23);
     suv ford = suv("Ford", 2012, 20000);
 
+    // Print car information
     printCarInfo(tesla);
     printCarInfo(hyundai);
 
+    // Reference to the base class pointing to a derived class object
     car &ref = ford;
     printCarInfo(ref);
+
+    // Create another suv object
     suv ford2 = suv("Ford", 2017, 10000);
     ref = ford2;
+
+    // Print updated car information
     printCarInfo(ref);
+
     return 0;
 }
+
+

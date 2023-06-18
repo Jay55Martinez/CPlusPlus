@@ -3,10 +3,20 @@
 // Check for possible compiler errors, logical errors and rectify them
 // Re-factor the code by adding few comments (make it readable) and
 // provide list of most important fixes (in comments)
+/*
+List of fixes:
+constructor fixed
+printList works with T
+operator<< returns out
+printList was changed to <<
 
+*/
 #include <iostream>
 #include <string>
 using namespace std;
+
+
+// Container class for displaying a comma-separated list
 template <class T>
 class CommaSeparatedList
 {
@@ -18,25 +28,27 @@ public:
    CommaSeparatedList(T *d, int s);
    void printList();
 };
+
 template <class T>
-CommaSeparatedList<T>::CommaSeparatedList(T d, int s)
+CommaSeparatedList<T>::CommaSeparatedList(T* d, int s)
 {
    data = d;
    size = s;
 }
+
 template <class T>
-    void CommaSeparatedList < T < ::printList()
+void CommaSeparatedList<T>::printList()
 {
-   cout >> "Comma separated list:" << endl;
+   cout << "Comma separated list:" << endl;
    for (int x = 0; x < size; ++x)
    {
-      cout << data[y];
+      cout << data[x]; // Changed "y" to "x" to correctly access array elements
       if (x != size - 1)
          cout << ", ";
    }
-   cout << endl
-        << endl;
+   cout << endl << endl;
 }
+
 class Book
 {
    friend ostream &operator<<(ostream &, const Book &);
@@ -48,6 +60,7 @@ private:
 public:
    void setBook(string, int);
 };
+
 void Book::setBook(string Title, int pr)
 {
    title = Title;
@@ -56,8 +69,8 @@ void Book::setBook(string Title, int pr)
 
 ostream &operator<<(ostream &out, const Book &b)
 {
-   out << b.title << " was published in" << b.year;
-   return ostream;
+   out << b.title << " was published in " << b.year; // Added a space after "in"
+   return out;
 }
 
 class Customer
@@ -71,14 +84,16 @@ private:
 public:
    void setCustomer(string, double);
 };
+
 void Customer::setCustomer(string CustomerName, double pr)
 {
    name = CustomerName;
    balDue = pr;
 }
+
 ostream &operator<<(ostream &out, const Customer &aCustomer)
 {
-   out << aCustomer.name << " owes  $" << aCustomer.balDue;
+   out << aCustomer.name << " owes $" << aCustomer.balDue; // Added a space before "owes"
    return out;
 }
 
@@ -103,14 +118,14 @@ int main()
    CommaSeparatedList<int> CommaSeparatedListOfIntegers(someInts, CommaSeparatedListSize);
    CommaSeparatedListSize = sizeof(someDoubles) / sizeof(someDoubles[0]);
    CommaSeparatedList<double> CommaSeparatedListOfDoubles(someDoubles, CommaSeparatedListSize);
-   CommaSeparatedListSize = sizeif(someBook) / sizeof(someBook[0]);
+   CommaSeparatedListSize = sizeof(someBook) / sizeof(someBook[0]); // Fixed typo "sizeif" to "sizeof"
    CommaSeparatedList<Book> CommaSeparatedListOfBooks(someBook, CommaSeparatedListSize);
    CommaSeparatedListSize = sizeof(someCustomers) / sizeof(someCustomers[0]);
    CommaSeparatedList<Customer> CommaSeparatedListOfCustomers(someCustomers, CommaSeparatedListSize);
-   // Use showList() with each CommaSeparatedList
+   // Use printList() with each CommaSeparatedList
    CommaSeparatedListOfIntegers.printList();
    CommaSeparatedListOfDoubles.printList();
-   CommaSeparatedListOfBooks.prinList();
+   CommaSeparatedListOfBooks.printList(); // Fixed typo "prinList" to "printList"
    CommaSeparatedListOfCustomers.printList();
    return 0;
 }

@@ -6,10 +6,15 @@
 // Check for possible compiler errors, logical errors and rectify them
 // Re-factor the code by adding few comments (make it readable) and
 // provide list of most important fixes (in comments)
-
 #include <iostream>
-
 using namespace std;
+
+/*
+List of fixes:
+constructor fixed for Calculator
+fix function decleration
+string Calculator needs both members to be a string
+*/
 // class to perform various operations on two variables of type T
 template <class T>
 class Calculator
@@ -28,38 +33,38 @@ public:
 };
 
 template <class T>
-Calculator<T>::Calculator(T n1, int n2)
+Calculator<T>::Calculator(T n1, T n2)
 {
     num1 = n1;
     num2 = n2;
 }
 
 template <class T>
-Calculator<T>::add()
+T Calculator<T>::add()
 {
     return num1 + num2;
 }
 
 template <class T>
-Calculator<T>::subtract()
+T Calculator<T>::subtract()
 {
     return num1 - num2;
 }
 
 template <class T>
-T Calculator<T>::multiply(T n1, T n2)
+T Calculator<T>::multiply()
 {
-    return n1 * n2;
+    return num1 * num2;
 }
 
 template <class T>
 T Calculator<T>::divide()
 {
-    return num1 % num2;
+    return num1 / num2;
 }
 
 template <class T>
-T Calculator<T>::isgreater()
+bool Calculator<T>::isgreater()
 {
     if (num1 > num2)
         return true;
@@ -83,7 +88,7 @@ int main()
     cout << calc2.divide() << endl;
     cout << std::boolalpha << calc2.isgreater() << endl;
 
-    Calculator<string> calc3("Hello", 1); // string operations
+    Calculator<string> calc3("Hello", "Hi"); // string operations
     cout << calc3.add() << endl;
     cout << std::boolalpha << calc3.isgreater() << endl;
     return 0;
