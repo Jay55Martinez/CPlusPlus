@@ -3,27 +3,34 @@ CC=g++
 CFLAGS= -I$(IDIR) -g -std=c++11 -O0
 
 ODIR=.
-NAME=ThreadedFibonacci
+
 LIBS=-lncurses
 
 _DEPS = 
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = $(NAME).o
-OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
+_OBJ1 = fibonacci.o
+_OBJ2 = ThreadedFibonacci.o
 
 $(ODIR)/%.o: %.cpp $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-$(NAME): $(OBJ)
+all: fibonacci ThreadedFibonacci
+
+	
+fibonacci: $(_OBJ1)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
-	./$(NAME)
+
+ThreadedFibonacci: $(_OBJ2)
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 .PHONY: clean
 
 clean:
 	rm -f *~ core $(INCDIR)/*~ 
-	rm -f $(NAME)
+	rm -f fibonacci
+	rm -f ThreadedFibonacci
 	rm -f *.o
+
 etags: 
-	find . -type f -iname "*.[ch]" | xargs etags --append  
+	find . -type f -iname "*.[ch]" | xargs etags --append 
