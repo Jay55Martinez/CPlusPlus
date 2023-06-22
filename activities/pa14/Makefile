@@ -1,6 +1,6 @@
 IDIR =../include
 CC=g++
-CFLAGS= -I$(IDIR) -g -std=c++11 -O0
+CFLAGS= -I$(IDIR) -g -std=c++11 -O0 -pthread
 
 ODIR=.
 

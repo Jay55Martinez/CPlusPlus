@@ -82,7 +82,8 @@ ThreadData startFibonacci( unsigned int n )
    // create a ThreadData object to store times
    ThreadData result = { 0, 0 };
  
-   cout << "Calculating fibonacci( " << n << " )" << endl;
+   cout << "Calculating fibonacci( " << n << " )" << " in thread " << this_thread::get_id() << endl;
+   result.startTime = time(nullptr);
    result.startTime = time( nullptr ); // time before calculation
    auto fibonacciValue = fibonacci( n );
    result.endTime = time( nullptr ); // time after calculation
